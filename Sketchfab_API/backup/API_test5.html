@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="author" content="author">
+        <title>New Amsterdam 1660 DEMO</title>
+        <!-- Insert this script old: <script type="text/javascript" src="https://static.sketchfab.com/api/sketchfab-viewer-1.11.0.js"></script>--> 
+        <script type="text/javascript" src="https://static.sketchfab.com/api/sketchfab-viewer-1.12.1.js"></script>
+    <style>
+    html,
+    body {
+      padding: 0;
+      margin: 0;
+      width: 100vw;
+      height: 100vh;
+      -webkit-font-smoothing: antialiased;
+      -moz-font-smoothing: grayscale;
+      font-family: Open Sans, sans-serif;
+    }
+    
+    * {
+      box-sizing: border-box;
+    }
+    
+    .container {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+    
+    .iframe-container {
+      position: relative;
+      width: 100%;
+      flex: 1;
+      display: flex;
+    }
+    
+    .iframe-container > iframe {
+      border: 0;
+      width: 100%;
+      flex: 1;
+    }
+	
+.custom-button {
+background-color: white;
+color: black;
+padding: 30px;
+border: none;
+border-radius: 4px;
+cursor: pointer;
+font-weight: bold;
+font-family: "Open Sans";
+font-size: 18px;
+<!--border: 2px solid black;-->
+<!--border-radius: 4px;-->
+}
+
+
+
+<!-- Add 20px of empty space above the resetCamera button.
+}
+#resetCamera {
+  margin-top: 20px;
+}-->
+
+
+<!-- comment out using this -->
+
+ 
+
+    
+
+</style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="iframe-container">
+          <iframe src="" id="api-frame"></iframe>
+        </div>
+		<button id="resetCamera" class="custom-button">&gt; TAP TO RESET VIEW &lt;</button>
+      </div>
+
+
+<script type="text/javascript">
+// Sketchfab Viewer API: Camera Limits + Annotations (Full Viewer API)
+const version = '1.12.1';
+const uid = '066d48a04bde4afc828e3e4411fe2c12';
+// Demo: a5f3238c8fbf4d4ca958de34a8870345
+// Full model: a34eebc7966c4589934afb2334e182b6
+// Camera restrictions: 066d48a04bde4afc828e3e4411fe2c12
+const iframe = document.getElementById('api-frame');
+const client = new window.Sketchfab(version, iframe);
+let api;
+
+// Camera logs
+const cameraData = {
+    "useCameraConstraints": true,
+    "usePanConstraints": true,
+    "useZoomConstraints": false,
+    "usePitchConstraints": true,
+    "useYawConstraints": false,
+};
+
+// Annotation logs from model
+const annotationData = [
+{
+  "ScenePosition": [
+    207.3929311363618,
+    147.8402181335592,
+    -0.568419344128393
+  ],
+  "WorldPosition": [
+    207.3929311363618,
+    147.8402181335592,
+    -0.568419344128393
+  ],
+  "eye": {
+    "0": 205.03296343003865,
+    "1": 138.57866604956823,
+    "2": 3.2927761476209874
+  },
+  "target": {
+    "0": 219.38134837171998,
+    "1": 161.6250866115895,
+    "2": 0.78552948102977 // -22.78552948102977
+  },
+  "title": "Pier",
+  "text": "Loading pier test"
+},
+{
+  "ScenePosition": [
+    181.26778967388975,
+    209.9118841538982,
+    -0.49379102718939727
+  ],
+  "WorldPosition": [
+    181.26778967388975,
+    209.9118841538982,
+    -0.49379102718939727
+  ],
+  "eye": {
+    "0": 183.97283526585022,
+    "1": 205.21027702756714,
+    "2": 0.7902681662455275
+  },
+  "target": {
+    "0": 183.95023347146912,
+    "1": 205.33879926659594,
+    "2": 0.7671377106848531
+  },
+  "title": "House interior",
+  "text": "House interior test"
+},
+{
+  "ScenePosition": [
+    276.5285445222794,
+    209.0717665446847,
+    -0.551916720733689
+  ],
+  "WorldPosition": [
+    276.5285445222794,
+    209.0717665446847,
+    -0.551916720733689
+  ],
+  "eye": {
+    "0": 277.4858219737538,
+    "1": 202.8732645468753,
+    "2": 1.6460158338629187
+  },
+  "target": {
+    "0": 277.7383172210576,
+    "1": 204.31336196825387,
+    "2": 1.136033595160929
+  },
+  "title": "Oink Oink",
+  "text": "![](https://nahc-mapping.org/mappingNY/encyclopedia/sites/default/files/2019-06/Pig_market_in_a_Dutch_town_ClaesMolenaer_c1630-1676_web_0.jpg)\n\nResearchers have noted that there were almost as many pigs in the streets of New Amsterdam as people!\n\nPigs were a source of meat, and a method of keeping the streets clean."
+}
+];
+// Scripts for resetting camera to default position. Position, target, speed
+const resetCamera = () => {
+    api.setCameraLookAt([179,85,58], [211,204,-37], 5, function(err) {
+        if (!err) {
+            window.console.log('Camera moved');
+        }
+    })
+}
+const error = () => window.console.error('Sketchfab API error');
+
+const success = apiClient => {
+    api = apiClient;
+    api.start();
+    api.addEventListener('viewerready', () => {
+        window.console.log('viewer ready');
+document
+        .getElementById("resetCamera")
+        .addEventListener("click", function () {
+          resetCamera()
+        });
+		// Force HD textures on startup.
+		api.setTextureQuality('hd', function(err) {})
+        api.setCameraConstraints(cameraData, () => {
+            window.console.log('Camera constraints enabled');
+        });
+        for (const annotation of annotationData) {
+            api.createAnnotationFromScenePosition(
+                annotation.ScenePosition,
+                annotation.eye,
+                annotation.target,
+                annotation.title,
+                annotation.text,
+                (err, index) => {
+                    if (!err) {
+                        window.console.log(`Created annotation #${index + 1}`);
+                    }
+                }
+            );
+        }
+
+    });
+};
+
+
+client.init(uid, {
+    annotation: 0, // Usage: Setting to [1 – 100] will automatically load that annotation when the viewer starts.
+    annotations_visible: 1, // Usage: Setting to 0 will hide annotations by default.
+    autospin: 0, // Usage: Setting to any other number will cause the model to automatically spin around the z-axis after loading.
+    autostart: 1, // Usage: Setting to 1 will make the model load immediately once the page is ready, rather than waiting for a user to click the Play button.
+    camera: 0, // Usage: Setting to 0 will skip the initial animation that occurs when a model is loaded, and immediately show the model in its default position.
+    ui_stop: 0, // Usage: Setting to 0 will hide the "Disable Viewer" button in the top right so that users cannot stop the 3D render once it is started.
+    transparent: 0, // Usage: Setting to 1 will make the model's background transparent
+    ui_animations: 0, // Usage: Setting to 0 will hide the animation menu and timeline.
+    ui_annotations: 1, // Usage: Setting to 0 will hide the Annotation menu.
+    ui_controls: 1, // Usage: Setting to 0 will hide all the viewer controls at the bottom of the viewer (Help, Settings, Inspector, VR, Fullscreen, Annotations, and Animations).
+    ui_fullscreen: 0, // Usage: Setting to 0 will hide the Fullscreen button.
+    ui_general_controls: 1, // Usage: Setting to 0 will hide main control buttons in the bottom right of the viewer (Help, Settings, Inspector, VR, Fullscreen).
+    ui_help: 1, // Usage: Setting to 0 will hide the Help button.
+    ui_hint: 1, // Usage: Setting to 0 will always hide the viewer hint animation ("click & hold to rotate"). Setting to 1 will show the hint the first time per browser session (using a cookie). Setting to 2 will always show the hint.
+    ui_infos: 0, // Usage: Setting to 0 will hide the model info bar at the top of the viewer.
+    ui_inspector: 0, // Usage: Setting to 0 will hide the inspector button.
+    ui_settings: 0, // Usage: Setting to 0 will hide the Settings button.
+    ui_vr: 0, // Usage: Setting to 0 will hide the View in VR button.
+	ui_ar: 0, // 0 will hide the AR button.
+    ui_watermark_link: 0, // Usage: Setting to 0 remove the link from the Sketchfab logo watermark.
+    ui_color: '00a8c0', // Usage: Setting to a hexidecimal color code (without the #) or a HTML color name will change the color of the viewer loading bar.
+    ui_watermark: 0, // Usage: Setting to 0 remove the Sketchfab logo watermark .
+	graph_optimizer: 1, // Magic.
+
+    success: success,
+    error: error
+});
+
+
+
+</script>
+</body>
+</html>

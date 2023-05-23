@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="author" content="author">
+        <title>New Amsterdam 1660 DEMO</title>
+        <!-- Insert this script old: <script type="text/javascript" src="https://static.sketchfab.com/api/sketchfab-viewer-1.11.0.js"></script>--> 
+        <script type="text/javascript" src="https://static.sketchfab.com/api/sketchfab-viewer-1.12.1.js"></script>
+    <style>
+    html,
+    body {
+      padding: 0;
+      margin: 0;
+      width: 100vw;
+      height: 100vh;
+      -webkit-font-smoothing: antialiased;
+      -moz-font-smoothing: grayscale;
+      font-family: Open Sans, sans-serif;
+    }
+    
+    * {
+      box-sizing: border-box;
+    }
+    
+    .container {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+    
+    .iframe-container {
+      position: relative;
+      width: 100%;
+      flex: 1;
+      display: flex;
+    }
+    
+    .iframe-container > iframe {
+      border: 0;
+      width: 100%;
+      flex: 1;
+    }
+	
+.custom-button {
+background-color: white;
+color: black;
+padding: 30px;
+border: none;
+border-radius: 4px;
+cursor: pointer;
+font-weight: bold;
+font-family: "Open Sans";
+font-size: 18px;
+<!--border: 2px solid black;-->
+<!--border-radius: 4px;-->
+}
+
+
+
+<!-- Add 20px of empty space above the resetCamera button.
+}
+#resetCamera {
+  margin-top: 20px;
+}-->
+
+
+<!-- comment out using this -->
+
+ 
+
+    
+
+</style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="iframe-container">
+          <iframe src="" id="api-frame"></iframe>
+        </div>
+		<button id="resetCamera" class="custom-button">&gt; TAP TO RESET VIEW &lt;</button>
+      </div>
+
+
+<script type="text/javascript">
+// Sketchfab Viewer API: Camera Limits + Annotations (Full Viewer API)
+const version = '1.12.1';
+const uid = '066d48a04bde4afc828e3e4411fe2c12';
+// Demo: a5f3238c8fbf4d4ca958de34a8870345
+// Full model: a34eebc7966c4589934afb2334e182b6
+// Camera restrictions: 066d48a04bde4afc828e3e4411fe2c12
+const iframe = document.getElementById('api-frame');
+const client = new window.Sketchfab(version, iframe);
+let api;
+
+// Camera logs
+const cameraData = {
+    "useCameraConstraints": true,
+    "usePanConstraints": true,
+    "useZoomConstraints": true,
+    "usePitchConstraints": true,
+    "useYawConstraints": false,
+};
+
+// Annotation logs from model - change view positions
+const annotationData = [
+{
+  "ScenePosition": [
+    15.0601457015,
+    9.9187836978,
+    0//-0.55192
+  ],
+  "WorldPosition": [
+    15.0601457015,
+    9.9187836978,
+    0//-0.55192
+  ],
+  "eye": [
+    11.4704509349,
+    -5.8425404528,
+    5
+  ],
+  "target": [
+    15.0601457015,
+    9.9187836978,
+    0
+  ],
+  "title": "Manuel de Gerrit de Reus",
+  "text": "![](https://www.newamsterdamhistorycenter.org/media/images/img_p8_manuel.png)\r\n\r\n**_From Slavery To Freedom_**\r\n\r\nManuel de Gerrit de Reus climbed a ladder to be executed for murder. Although one of nine slaves who confessed to the murder, Manuel was chosen by the drawing of lots to pay the ultimate penalty for the crime. Before him stood New Amsterdam’s population, ready to bear witness to the local court’s ruling. Two ropes were secured around his neck to compensate for his great size and weight. The executioner pushed Manuel from the ladder…"
+},
+{
+  "ScenePosition": [
+    40.72088511465905,
+    41.14722022384351,
+    2.1480683174896154
+  ],
+  "WorldPosition": [
+    40.72088511465905,
+    41.14722022384351,
+    2.1480683174896154
+  ],
+  "eye": [
+    46.28845465980001,
+    36.411968625699984,
+    7.692946939799999
+  ],
+  "target": [
+    11.4145554844,
+    78.1738405965,
+    -29.891260755600005
+  ],
+  "title": "Peter Stuyvesant",
+  "text": "![](https://nahc-mapping.org/mappingNY/encyclopedia/sites/default/files/2019-07/Peter_Stuyvesant_webportrait_0.jpg)\r\n\r\nPeter Stuyvesant served as the last Dutch director-general of the colony of New Netherland from 1647 until it was ceded provisionally to the English in 1664."
+},
+{
+  "ScenePosition": [
+    10.7803321325,
+    66.6623007553,
+    -0.5519167207
+  ],
+  "WorldPosition": [
+    10.7803321325,
+    66.6623007553,
+    -0.5519167207
+  ],
+  "eye": [
+    12.8551276327,
+    59.8269684699,
+    5.4664237039
+  ],
+  "target": [
+    10.1778692733,
+    66.994441513,
+    -0.1760383185
+  ],
+  "title": "Fruit trees",
+  "text": "Apple trees and other fruit trees were planted by the Dutch West India Company in their gardens, and many farmers also planted them."
+},
+{
+  "ScenePosition": [
+    -95.0908231608,
+    183.9137200284,
+    5.437641733
+  ],
+  "WorldPosition": [
+    -95.0908231608,
+    183.9137200284,
+    5.437641733
+  ],
+  "eye": [
+    -115.7847303537,
+    141.1199055714,
+    32.2580036879
+  ],
+  "target": [
+    -107.8331856212,
+    154.8720025398,
+    23.4864219368
+  ],
+  "title": "Fort Amsterdam",
+  "text": "![](https://nahc-mapping.org/mappingNY/encyclopedia/sites/default/files/2021-10/NewAmsterdam_Vingboons_fullres_cropped.jpg)"
+},
+{
+  "ScenePosition": [
+    -30.521460206951616,
+    194.21229621403631,
+    -0.5519167207336857
+  ],
+  "WorldPosition": [
+    -30.521460206951616,
+    194.21229621403631,
+    -0.5519167207336857
+  ],
+  "eye": [
+    -23.193677651190086,
+    185.10435407201916,
+    5.866747125298705
+  ],
+  "target": [
+    -37.24127866852781,
+    207.86149794208401,
+    -6.239824578244935
+  ],
+  "title": "Pigs",
+  "text": "![](https://nahc-mapping.org/mappingNY/encyclopedia/sites/default/files/2019-06/Pig_market_in_a_Dutch_town_ClaesMolenaer_c1630-1676_web_0.jpg)\r\n\r\nSome researchers have noted that there were almost as many pigs in the streets of New Amsterdam as people!     Pigs were a source of meat, and a method of keeping the streets clean."
+},
+{
+  "ScenePosition": [
+    166.3901013947619,
+    201.77297168650173,
+    -0.5519167207336874
+  ],
+  "WorldPosition": [
+    166.3901013947619,
+    201.77297168650173,
+    -0.5519167207336874
+  ],
+  "eye": [
+    160.07117833919997,
+    190.6702918857,
+    13.3010336932
+  ],
+  "target": [
+    162.30920168,
+    193.9597399132,
+    0
+  ],
+  "title": "House and brewery of Govert Loockermans",
+  "text": "**_From Ship Boy to Founding Father_**\r\n\r\nGovert Loockermans didn’t stay in the small Spanish Netherlands town where he was born in 1612. Instead, as one of the first of the millions who dreamt of new opportunities in a new land, he set out and became a founding father of New Amsterdam, the first chartered city in what would become the thirteen original American colonies."
+},
+{
+  "ScenePosition": [
+    299.01137402468885,
+    261.1856073314364,
+    -0.5519167207337006
+  ],
+  "WorldPosition": [
+    299.01137402468885,
+    261.1856073314364,
+    -0.5519167207337006
+  ],
+  "eye": [
+    309.5623614267969,
+    267.88601339925725,
+    4.666194101273015
+  ],
+  "target": [
+    300.4773845771459,
+    258.4708598086299,
+    1.8431516735204103
+  ],
+  "title": "Stone Street",
+  "text": "In 1658 Stone Street became the first cobbled street in New Amsterdam."
+},
+{
+  "ScenePosition": [
+    349.7990235389,
+    232.009374457,
+    -2.1123571583
+  ],
+  "WorldPosition": [
+    349.7990235389,
+    232.009374457,
+    -2.1123571583
+  ],
+  "eye": [
+    353.5327821666,
+    226.4188275841,
+    1.1192353984
+  ],
+  "target": [
+    345.5565831073,
+    233.1625303545,
+    -4.2581715984
+  ],
+  "title": "Canoe – Lenape",
+  "text": "Chief Oratam, Sachem of Hackinkesacky"
+},
+{
+  "ScenePosition": [
+    402.8185037779,
+    405.3432742646,
+    1.8863571693
+  ],
+  "WorldPosition": [
+    402.8185037779,
+    405.3432742646,
+    1.8863571693
+  ],
+  "eye": [
+    417.9792546011,
+    413.7866344786,
+    9.2085677896
+  ],
+  "target": [
+    395.9477106959,
+    407.571337429,
+    0.2107457367
+  ],
+  "title": "The Wall",
+  "text": "The initial plans for the wall called for 12 feet long palisades. However, when the job was put up for bid no one came close to the committee's offer. The committee decided to downsize the project by using planks instead of palisades.)"
+},
+{
+  "ScenePosition": [
+    188.11905521671494,
+    561.9758360555122,
+    -0.5519167207337673
+  ],
+  "WorldPosition": [
+    188.11905521671494,
+    561.9758360555122,
+    -0.5519167207337673
+  ],
+  "eye": [
+    201.07067855349996,
+    564.6984711524,
+    7.083869673399999
+  ],
+  "target": [
+    191.66565295920006,
+    562.0729106233,
+    2.4260272568999994
+  ],
+  "title": "Magrietje Cosyns",
+  "text": "**_From Emigrants’ Daughter to Landed Matriarch_**\r\n\r\nMargarietje Cosyns, an early immigrant to New Amsterdam married three times, had 7 children, and became a major landholder."
+}
+];
+// Scripts for resetting camera to default position. Position, target, speed
+const resetCamera = () => {
+    api.setCameraLookAt([85,308,700], [85,308,0], 5, function(err) { // backup [179,85,58], [211,204,-37], 5
+        if (!err) {
+            window.console.log('Camera moved');
+        }
+    })
+}
+const error = () => window.console.error('Sketchfab API error');
+
+const success = apiClient => {
+    api = apiClient;
+    api.start();
+    api.addEventListener('viewerready', () => {
+        window.console.log('viewer ready');
+document
+        .getElementById("resetCamera")
+        .addEventListener("click", function () {
+          resetCamera()
+        });
+		// Force HD textures on startup.
+		api.setTextureQuality('hd', function(err) {})
+        api.setCameraConstraints(cameraData, () => {
+            window.console.log('Camera constraints enabled');
+        });
+        for (const annotation of annotationData) {
+            api.createAnnotationFromScenePosition(
+                annotation.ScenePosition,
+                annotation.eye,
+                annotation.target,
+                annotation.title,
+                annotation.text,
+                (err, index) => {
+                    if (!err) {
+                        window.console.log(`Created annotation #${index + 1}`);
+                    }
+                }
+            );
+        }
+
+    });
+};
+
+
+client.init(uid, {
+    annotation: 0, // Usage: Setting to [1 – 100] will automatically load that annotation when the viewer starts.
+    annotations_visible: 1, // Usage: Setting to 0 will hide annotations by default.
+    autospin: 0, // Usage: Setting to any other number will cause the model to automatically spin around the z-axis after loading.
+    autostart: 1, // Usage: Setting to 1 will make the model load immediately once the page is ready, rather than waiting for a user to click the Play button.
+    camera: 0, // Usage: Setting to 0 will skip the initial animation that occurs when a model is loaded, and immediately show the model in its default position.
+    ui_stop: 0, // Usage: Setting to 0 will hide the "Disable Viewer" button in the top right so that users cannot stop the 3D render once it is started.
+    transparent: 0, // Usage: Setting to 1 will make the model's background transparent
+    ui_animations: 0, // Usage: Setting to 0 will hide the animation menu and timeline.
+    ui_annotations: 1, // Usage: Setting to 0 will hide the Annotation menu.
+    ui_controls: 1, // Usage: Setting to 0 will hide all the viewer controls at the bottom of the viewer (Help, Settings, Inspector, VR, Fullscreen, Annotations, and Animations).
+    ui_fullscreen: 0, // Usage: Setting to 0 will hide the Fullscreen button.
+    ui_general_controls: 1, // Usage: Setting to 0 will hide main control buttons in the bottom right of the viewer (Help, Settings, Inspector, VR, Fullscreen).
+    ui_help: 1, // Usage: Setting to 0 will hide the Help button.
+    ui_hint: 1, // Usage: Setting to 0 will always hide the viewer hint animation ("click & hold to rotate"). Setting to 1 will show the hint the first time per browser session (using a cookie). Setting to 2 will always show the hint.
+    ui_infos: 0, // Usage: Setting to 0 will hide the model info bar at the top of the viewer.
+    ui_inspector: 0, // Usage: Setting to 0 will hide the inspector button.
+    ui_settings: 0, // Usage: Setting to 0 will hide the Settings button.
+    ui_vr: 0, // Usage: Setting to 0 will hide the View in VR button.
+	ui_ar: 0, // 0 will hide the AR button.
+    ui_watermark_link: 0, // Usage: Setting to 0 remove the link from the Sketchfab logo watermark.
+    ui_color: '00a8c0', // Usage: Setting to a hexidecimal color code (without the #) or a HTML color name will change the color of the viewer loading bar.
+    ui_watermark: 0, // Usage: Setting to 0 remove the Sketchfab logo watermark .
+	graph_optimizer: 1, // Magic.
+	scrollwheel: 0, // Disables zooming
+	orbit_constraint_pan: 1, // Doesn't seem to do anything
+	double_click: 0,
+		
+    success: success,
+    error: error
+});
+
+
+
+</script>
+</body>
+</html>

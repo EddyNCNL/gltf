@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="author" content="author">
+        <title>Name</title>
+        <!-- Insert this script -->
+        <script type="text/javascript" src="https://static.sketchfab.com/api/sketchfab-viewer-1.11.0.js"></script>
+    <style>
+    html,
+    body {
+      padding: 0;
+      margin: 0;
+      width: 100vw;
+      height: 100vh;
+      -webkit-font-smoothing: antialiased;
+      -moz-font-smoothing: grayscale;
+      font-family: Open Sans, sans-serif;
+    }
+    
+    * {
+      box-sizing: border-box;
+    }
+    
+    .container {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+    
+    .iframe-container {
+      position: relative;
+      width: 100%;
+      flex: 1;
+      display: flex;
+    }
+    
+    .iframe-container > iframe {
+      border: 0;
+      width: 100%;
+      flex: 1;
+    }
+    
+
+    
+
+</style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="iframe-container">
+          <iframe src="" id="api-frame"></iframe>
+        </div>
+      </div>
+
+
+<script type="text/javascript">
+// Sketchfab Viewer API: Camera Limits + Annotations (Full Viewer API)
+const version = '1.12.1';
+const uid = 'a34eebc7966c4589934afb2334e182b6';
+const iframe = document.getElementById('api-frame');
+const client = new window.Sketchfab(version, iframe);
+let api;
+
+// Camera logs from model 8aaa8a43ba05482aaf6214ec80fb412b
+const cameraData = {
+    "useCameraConstraints": false,
+    "usePanConstraints": false,
+    "useZoomConstraints": false,
+    "usePitchConstraints": false,
+    "useYawConstraints": false,
+};
+
+// Annotation logs from model
+const annotationData = [
+{
+  "ScenePosition": [
+    0.11150271760524864,
+    0.01868644004755702,
+    0.14798929527680063
+  ],
+  "WorldPosition": [
+    0.11150271760524864,
+    0.01868644004755702,
+    0.14798929527680063
+  ],
+  "eye": {
+    "0": 0.10874292966045929,
+    "1": -4.044061174912253,
+    "2": 1.46611608450739
+  },
+  "target": {
+    "0": 0.10874292966045979,
+    "1": 0.026232822724570413,
+    "2": 0.14359739521661158
+  },
+  "title": "Capitate",
+  "text": "blah blah"
+},
+{
+  "ScenePosition": [
+    0.09802668672509632,
+    0.016890134500758863,
+    0.13724008374630253
+  ],
+  "WorldPosition": [
+    0.09802668672509632,
+    0.016890134500758863,
+    0.13724008374630253
+  ],
+  "eye": {
+    "0": 0.12983429019830417,
+    "1": -2.638717024685488,
+    "2": 0.6851971976494096
+  },
+  "target": {
+    "0": 0.10310628542361333,
+    "1": 0.02469462117531713,
+    "2": 0.1364066602495324
+  },
+  "title": "Hamate",
+  "text": "blah blah"
+}
+];
+
+
+const error = () => window.console.error('Sketchfab API error');
+
+const success = apiClient => {
+    api = apiClient;
+    api.start();
+    api.addEventListener('viewerready', () => {
+        window.console.log('viewer ready');
+
+        api.setCameraConstraints(cameraData, () => {
+            window.console.log('Camera constraints enabled');
+        });
+        for (const annotation of annotationData) {
+            api.createAnnotationFromScenePosition(
+                annotation.ScenePosition,
+                annotation.eye,
+                annotation.target,
+                annotation.title,
+                annotation.text,
+                (err, index) => {
+                    if (!err) {
+                        window.console.log(`Created annotation #${index + 1}`);
+                    }
+                }
+            );
+        }
+
+    });
+};
+
+
+client.init(uid, {
+    annotation: 0, // Usage: Setting to [1 – 100] will automatically load that annotation when the viewer starts.
+    annotations_visible: 1, // Usage: Setting to 0 will hide annotations by default.
+    autospin: 0, // Usage: Setting to any other number will cause the model to automatically spin around the z-axis after loading.
+    autostart: 1, // Usage: Setting to 1 will make the model load immediately once the page is ready, rather than waiting for a user to click the Play button.
+    camera: 0, // Usage: Setting to 0 will skip the initial animation that occurs when a model is loaded, and immediately show the model in its default position.
+    ui_stop: 0, // Usage: Setting to 0 will hide the "Disable Viewer" button in the top right so that users cannot stop the 3D render once it is started.
+    transparent: 0, // Usage: Setting to 1 will make the model's background transparent
+    ui_animations: 0, // Usage: Setting to 0 will hide the animation menu and timeline.
+    ui_annotations: 1, // Usage: Setting to 0 will hide the Annotation menu.
+    ui_controls: 1, // Usage: Setting to 0 will hide all the viewer controls at the bottom of the viewer (Help, Settings, Inspector, VR, Fullscreen, Annotations, and Animations).
+    ui_fullscreen: 0, // Usage: Setting to 0 will hide the Fullscreen button.
+    ui_general_controls: 1, // Usage: Setting to 0 will hide main control buttons in the bottom right of the viewer (Help, Settings, Inspector, VR, Fullscreen).
+    ui_help: 1, // Usage: Setting to 0 will hide the Help button.
+    ui_hint: 1, // Usage: Setting to 0 will always hide the viewer hint animation ("click & hold to rotate"). Setting to 1 will show the hint the first time per browser session (using a cookie). Setting to 2 will always show the hint.
+    ui_infos: 0, // Usage: Setting to 0 will hide the model info bar at the top of the viewer.
+    ui_inspector: 0, // Usage: Setting to 0 will hide the inspector button.
+    ui_settings: 0, // Usage: Setting to 0 will hide the Settings button.
+    ui_vr: 0, // Usage: Setting to 0 will hide the View in VR button.
+    ui_watermark_link: 0, // Usage: Setting to 0 remove the link from the Sketchfab logo watermark.
+    ui_color: '00a8c0', // Usage: Setting to a hexidecimal color code (without the #) or a HTML color name will change the color of the viewer loading bar.
+    ui_watermark: 0, // Usage: Setting to 0 remove the Sketchfab logo watermark.
+
+    success: success,
+    error: error
+});
+
+
+
+</script>
+</body>
+</html>
