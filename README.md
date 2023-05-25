@@ -4,4 +4,4 @@
 
 Testing testing
 
-Direct link: https://eddyncnl.github.io/gltf/Sketchfab_API/API_test4.html
+Direct link: https://eddyncnl.github.io/gltf/Sketchfab_API/4.html
